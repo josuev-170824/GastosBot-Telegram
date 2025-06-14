@@ -5,7 +5,7 @@ Un bot de Telegram que te ayuda a registrar y llevar el control de tus gastos pe
 ## 📋 Características
 
 - Registro de gastos con fecha, monto y motivo
-- Control de presupuesto quincenal
+- Control del total de gastos acumulados
 - Almacenamiento de datos en Excel
 - Interfaz simple y fácil de usar
 
@@ -50,18 +50,21 @@ Cuándo: DD/MM/AAAA. Cuánto: MONTO colones. En qué: MOTIVO.
 
 Ejemplo:
 ```
-Cuándo: 13/06/2025. Cuánto: 1000 colones. En qué: Uber al gym.
+Cuándo: 01/01/2025. Cuánto: 1000 colones. En qué: Uber Universidad.
 ```
+
+3. Comandos disponibles:
+- `/start` - Muestra el mensaje de bienvenida y el formato a usar
+- `/total` - Muestra el total de gastos acumulados
 
 ## 📊 Funcionamiento
 
 - El bot registra cada gasto en un archivo Excel
-- Mantiene un control del presupuesto quincenal (₡20,000 por defecto)
-- Muestra el monto restante después de cada registro
+- Muestra el total acumulado después de cada registro
 - Las fechas se guardan en formato DD/MM/AAAA
+- Puedes consultar el total de gastos en cualquier momento con el comando `/total`
 
 ## 📝 Notas
 
 - Los datos se guardan en el archivo `gastos.xlsx`
-- El presupuesto se reinicia cada quincena
-- Puedes modificar el monto del presupuesto en la variable `PRESUPUESTO` 
+- El archivo Excel se crea automáticamente al registrar el primer gasto

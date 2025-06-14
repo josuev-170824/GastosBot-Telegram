@@ -6,13 +6,13 @@ import re
 from dotenv import load_dotenv
 import os
 
-# ✅ CONFIGURACIÓN
+# CONFIG
 load_dotenv()
 TOKEN = os.getenv('TELEGRAM_TOKEN')
 PRESUPUESTO = 20000  # Monto quincenal
-ARCHIVO = 'gastos.xlsx'  # Archivo Excel donde se guardan los datos
+ARCHIVO = 'gastos.xlsx'  # Archivo Excel para datos
 
-# ✅ CARGAR DATOS
+# CARGAR DATOS
 def cargar_datos():
     try:
         df = pd.read_excel(ARCHIVO)
@@ -23,18 +23,18 @@ def cargar_datos():
     except Exception as e:
         return pd.DataFrame(columns=["Fecha", "Monto", "Motivo"])
 
-# ✅ GUARDAR DATOS
+# GUARDAR DATOS
 def guardar_datos(df):
     df = df.sort_values(by="Fecha", ascending=True)
     df["Fecha"] = pd.to_datetime(df["Fecha"])
     with pd.ExcelWriter(ARCHIVO, engine='openpyxl', datetime_format='dd/mm/yyyy') as writer:
         df.to_excel(writer, index=False)
 
-# ✅ COMANDO /start
+# COMANDO /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("👋 Hola, soy tu bot de gastos. Envíame un mensaje así:\n\nCuándo: 13/06/2025. Cuánto: 1000 colones. En qué: Uber al gym.")
 
-# ✅ MENSAJE DE GASTO
+# MENSAJE DE GASTO
 async def registrar_gasto(update: Update, context: ContextTypes.DEFAULT_TYPE):
     mensaje = update.message.text.strip()
 
@@ -48,7 +48,7 @@ async def registrar_gasto(update: Update, context: ContextTypes.DEFAULT_TYPE):
         try:
             fecha = datetime.strptime(fecha_str, "%d/%m/%Y").date()
         except ValueError:
-            await update.message.reply_text("❌ La fecha no es válida. Usá este formato: 13/06/2025.")
+            await update.message.reply_text("❌ La fecha no es válida. Use formato: 13/06/2025.")
             return
 
         df = cargar_datos()
@@ -62,22 +62,22 @@ async def registrar_gasto(update: Update, context: ContextTypes.DEFAULT_TYPE):
         restante = PRESUPUESTO - total_gastos
 
         respuesta = (
-            f"✅ Vas a registrar:\n"
+            f"✅ Va a registrar:\n"
             f"📅 Fecha: {fecha.strftime('%d/%m/%Y')}\n"
             f"💵 Monto: ₡{monto:,}\n"
             f"📝 Motivo: {motivo}\n\n"
-            f"✔️ Ya fue registrado. Te quedan ₡{restante:,} del presupuesto."
+            f"✔️ Ya fue registrado. Quedan ₡{restante:,} del presupuesto."
         )
         await update.message.reply_text(respuesta)
 
     else:
         await update.message.reply_text(
-            "❌ Lo que enviaste no tiene el formato correcto.\n"
+            "❌ Prompt no tiene el formato correcto.\n"
             "Por favor usá este formato:\n\n"
             "Cuándo: 13/06/2025. Cuánto: 1200 colones. En qué: Uber al gym."
         )
 
-# ✅ INICIAR EL BOT
+# INICIAR EL BOT
 app = ApplicationBuilder().token(TOKEN).build()
 
 app.add_handler(CommandHandler("start", start))
